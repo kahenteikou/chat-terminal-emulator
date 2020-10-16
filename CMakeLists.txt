@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.5)
 
 project(chat-terminal-emulator LANGUAGES CXX)
 
@@ -24,28 +24,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(TS_FILES chat-terminal-emulator_ja_JP.ts)
 
 if(ANDROID)
-    add_library(chat-terminal-emulator SHARED
-      main.cpp
-      qml.qrc
-      ${TS_FILES}
-    )
+  add_library(chat-terminal-emulator SHARED
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    ${TS_FILES}
+  )
 else()
-    add_executable(chat-terminal-emulator
-      main.cpp
-      qml.qrc
-      ${TS_FILES}
-    )
+  add_executable(chat-terminal-emulator
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    ${TS_FILES}
+  )
 endif()
 
-target_compile_definitions(chat-terminal-emulator
-  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
-target_link_libraries(chat-terminal-emulator
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+target_link_libraries(chat-terminal-emulator PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
